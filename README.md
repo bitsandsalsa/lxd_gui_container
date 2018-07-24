@@ -25,7 +25,7 @@ At one end of the isolation spectrum, system virtual machines (VM), or hyperviso
   * [gVisor](https://github.com/google/gvisor) ("[not a sandbox](https://github.com/google/gvisor#why-does-gvisor-exist)") - a user-space kernel that provides an isolation boundary between the application and the host kernel. "seccomp on steroids"
   * [Oz](https://github.com/subgraph/oz) (sandbox used by [Subgraph OS](https://subgraph.com/)) - transparently wraps executables by using Linux namespaces, seccomp filters, capabilities, and X11 isolation. The OS uses a hardened Linux kernel (through grsecurity, PaX, and RAP) and a custom sandbox called Oz
   * [Subuser](http://subuser.org/) - isolates apps in Docker containers and uses XPRA to isolate GUI. “Turns Docker container into an app”
-* rules-based - AppArmor, SELinux, seccomp
+* rules-based ([Linux Security Modules (LSM)](https://www.kernel.org/doc/htmldocs/lsm/index.html)) - AppArmor, SELinux, seccomp
 
 ## [Types](https://winswitch.org/documentation/protocols/choose.html) of GUI Isolation
 
