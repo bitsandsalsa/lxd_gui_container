@@ -1,0 +1,6 @@
+config:
+  security.devlxd: false
+description: LXD GUI profile
+devices:
+  gpu:
+    type: gpu

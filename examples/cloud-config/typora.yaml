@@ -1,0 +1,19 @@
+#cloud-config
+#
+# https://typora.io/#linux
+apt:
+  sources:
+    winswitch:
+      source: "deb http://winswitch.org/ xenial main"
+      keyid: "C11C 0A4D F702 EDF6 C04F 458C 18AD B31C F18A D6BB"
+    typora:
+      source: "deb https://typora.io/linux ./"
+      keyid: "4AC4 41BE 68B4 ADAB 7439  FBF9 BA30 0B77 55AF CFAE"
+packages:
+  - xpra
+  - typora
+  - libxss1
+  - libnss3
+runcmd:
+  - [ systemctl, disable, '--now', xpra ]
+timezone: US/Pacific

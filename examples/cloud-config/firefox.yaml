@@ -1,0 +1,12 @@
+#cloud-config
+apt:
+  sources:
+    winswitch:
+      source: "deb http://winswitch.org/ xenial main"
+      keyid: "C11C 0A4D F702 EDF6 C04F 458C 18AD B31C F18A D6BB"
+packages:
+  - xpra
+  - firefox
+runcmd:
+  - [ systemctl, disable, '--now', xpra ]
+timezone: US/Pacific
