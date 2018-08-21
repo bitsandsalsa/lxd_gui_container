@@ -7,6 +7,8 @@ apt:
 packages:
   - xpra
   - firefox
+  - libcanberra-gtk3-module
+  - pulseaudio
 runcmd:
-  - [ systemctl, disable, '--now', xpra ]
+  - [ systemctl, disable, --now, xpra, snapd, snapd.socket ]
 timezone: US/Pacific

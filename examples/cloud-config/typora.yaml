@@ -15,5 +15,5 @@ packages:
   - libxss1
   - libnss3
 runcmd:
-  - [ systemctl, disable, '--now', xpra ]
+  - [ systemctl, disable, --now, xpra, snapd, snapd.socket ]
 timezone: US/Pacific

@@ -152,3 +152,11 @@ You should only need to create a new cloud-init YAML config file. See the one fo
 7. xpra commandline options
 
    See all options with `xpra --help`. The man page has more details, but is missing some options.
+
+8. Errors creating the container
+
+  The "suite" in the APT repo line for xpra may be pointing to the wrong Ubuntu distribution. Check what distribution the container is (`lsb_release -c`) and match with the cloud config YAML file.
+
+9. An extra launcher icon is created for the app after attaching
+
+  Add a "StartupWMClass" key to the desktop file and set its value to the value reported by `xprop 8s ' $0\n' WM_CLASS | cut -f2 -d' '`. You can also force a temporary class on the window by running `xprop -f WM_CLASS 8s -set WM_CLASS my-app`. This would have to be set each time the app was run and actually this method doesn't properly set the WM_CLASS value because `xprop` cannot set a tuple value which WM_CLASS is.
