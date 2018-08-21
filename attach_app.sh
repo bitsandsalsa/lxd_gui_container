@@ -23,6 +23,10 @@ function print_err() {
   echo "[!] $*"
 }
 
+function cleanup() {
+  lxc exec "${CONTAINER_NAME}" -- sudo -u ubuntu -i xauth remove ":${display_num}"
+}
+
 if [ $# -lt 2 ]; then
     usage
     exit
@@ -66,7 +70,11 @@ xpra start ssh://ubuntu@"${container_ip}"/${display_num} \
   --start-child="${APP_CMDLINE}" \
   --exit-with-children \
   --start-via-proxy=no \
-  --attach=no || exit 1
+  --attach=no \
+  --mdns=no \
+  --html=off || exit 1
+
+trap cleanup EXIT
 
 readonly XPRA_SOCK="${CONTAINER_MOUNTS_DIR}/${CONTAINER_NAME}/xpra/${CONTAINER_NAME}-${display_num}"
 
