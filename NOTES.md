@@ -26,6 +26,20 @@ giblib1, gnome-icon-theme, libfm-extra4, libgif7, libid3tag0, libimlib2, libmenu
 freeglut3, libgtkglext1, libpango1.0-0, libpangox-1.0-0, python-gobject-2, python-gtk2, python-gtkglext1, python-lz4, python-lzo, python-olefile, python-opengl, python-pil, python-rencode, ssh-askpass, xpra, xserver-xorg-input-void, xserver-xorg-video-dummy
 
 ## TODO
+
+* should we start container on host boot? and keep running after app instance closes?
+* how to handle client closing GUI window
+  * use `systemd-run` config param?
+  * "attach" script starts and stops container per script invocation. Assumes container is first stopped
+* convert to Python and merge into one frontend script with subcommands
+* prompt user about non-empty file share bind mount when exiting app?
+* unprivileged containers make file sharing with host more complex. Do we get much security benefit at this cost?
+  * the crux of the problem is that some parts of the kernel are not namespace aware and so they see uid 0 and assume process is from real root user
+  * [Linux sandboxing improvements in Firefox 60](https://www.morbo.org/2018/05/linux-sandboxing-improvements-in_10.html)
+  * [Firejail GitHub issue - Implications of CONFIG_USER_NS](https://github.com/netblue30/firejail/issues/1347)
+   * with user namespaces, when things go wrong, you blame the kernel devs. With setuid, you blame the app and can probably fix it more easily than waiting on a kernel patch
+  * [Oz GitHub issue - User namespaces not used?](https://github.com/subgraph/oz/issues/11)
+
 ### xpra Management
 * start xpra on container boot
   * cloud-init runcmd is only once per instance
@@ -35,13 +49,6 @@ freeglut3, libgtkglext1, libpango1.0-0, libpangox-1.0-0, python-gobject-2, pytho
   * TODO: need ability to pass app arguments and multiple app instances
 * start xpra from host per app instance
   * too slow to start xpra server? Attaching client already takes several seconds
-
-* should we start container on host boot? and keep running after app instance closes?
-* how to handle client closing GUI window
-  * use `systemd-run` config param?
-  * "attach" script starts and stops container per script invocation. Assumes container is first stopped
-* convert to Python and merge into one frontend script with subcommands
-* prompt user about non-empty file share bind mount when exiting app?
 
 ### IO
 * set up audio
@@ -63,6 +70,12 @@ freeglut3, libgtkglext1, libpango1.0-0, libpangox-1.0-0, python-gobject-2, pytho
   * open-files
   * forward-xdg-open
   * printing
+* ask user to map file-to-be-opened into container so they can directly pass filenames to target app via "attach" script
+  * particularly useful when a user's file manager uses the script to access target file
+  * need to address file ownership and permissions
+   * temporary files are undesirable
+   * transparently change ownership and permissions?
+  * can bind mount a file into container
 
 ### Performance
 * fix errors in xpra client and server logs
