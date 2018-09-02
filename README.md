@@ -2,7 +2,7 @@
 
 This project seeks to use containers to provide isolation to the host system for running graphical applications. There is at least one security focused project ([x11docker](https://github.com/mviereck/x11docker)) that accomplishes this with Docker, but I wanted to use [lxd containers](https://linuxcontainers.org/). A [simple](https://blog.simos.info/how-to-easily-run-graphics-accelerated-gui-apps-in-lxd-containers-on-your-ubuntu-desktop/) [solution](https://stgraber.org/2014/02/09/lxc-1-0-gui-in-containers/) exists for Linux hosts that involves sharing the X server's socket file with the container. I wanted to avoid this because access to the socket [allows the container to access the host keyboard, video, mouse, and clipboard](http://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html).
 
-The newer [Wayland](https://wayland.freedesktop.org/) display server system will eventually replace X and mitigates the shared resource security issue that X has. However, the issue is still present if apps make use of the compatibility layer that allows X clients to run in Wayland. Wayland has been around since 2012[^1] and several GUI toolkits are compatible[^2] as of Q3 2018. Of note, Firefox is not yet compatible[^3]. [Project Crostini](https://chromium-review.googlesource.com/c/chromium/src/+/879173) may have solved this problem. The project's goal is to [use LXD to run Linux apps in Chrome OS](https://blog.simos.info/a-closer-look-at-chrome-os-using-lxd-to-run-linux-gui-apps-project-crostini/).
+The newer [Wayland](https://wayland.freedesktop.org/) display server system will eventually replace X and mitigates the shared resource security issue that X has. However, the issue is still present if apps make use of the compatibility layer that allows X clients to run in Wayland. [Wayland has been around since 2012](https://wayland.freedesktop.org/releases.html) and [several GUI toolkits are compatible](https://wayland.freedesktop.org/toolkits.html) as of Q3 2018. Of note, [Firefox is not yet compatible](https://bugzilla.mozilla.org/show_bug.cgi?id=635134). [Project Crostini](https://chromium-review.googlesource.com/c/chromium/src/+/879173) may have solved this problem. The project's goal is to [use LXD to run Linux apps in Chrome OS](https://blog.simos.info/a-closer-look-at-chrome-os-using-lxd-to-run-linux-gui-apps-project-crostini/).
 
 The goal of this project is to isolate the app as much as possible while using little host resources, easy setup, and user friendly. The original use case was Firefox, but efforts were made to keep it generic enough for other apps.
 
@@ -77,12 +77,6 @@ The "attach" tool will:
 1. start the container, if needed
 2. using SSH as transport, start the xpra server
 3. using Unix socket as transport, attach xpra client
-
-# References
-
-[^1]: https://wayland.freedesktop.org/releases.html
-[^2]: https://wayland.freedesktop.org/toolkits.html
-[^3]: https://bugzilla.mozilla.org/show_bug.cgi?id=635134
 
 # See also
 
