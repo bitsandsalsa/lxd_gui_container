@@ -2,6 +2,8 @@
 
 This project seeks to use containers to provide isolation to the host system for running graphical applications. There is at least one security focused project ([x11docker](https://github.com/mviereck/x11docker)) that accomplishes this with Docker, but I wanted to use [lxd containers](https://linuxcontainers.org/). A [simple](https://blog.simos.info/how-to-easily-run-graphics-accelerated-gui-apps-in-lxd-containers-on-your-ubuntu-desktop/) [solution](https://stgraber.org/2014/02/09/lxc-1-0-gui-in-containers/) exists for Linux hosts that involves sharing the X server's socket file with the container. I wanted to avoid this because access to the socket [allows the container to access the host keyboard, video, mouse, and clipboard](http://theinvisiblethings.blogspot.com/2011/04/linux-security-circus-on-gui-isolation.html).
 
+The newer [Wayland](https://wayland.freedesktop.org/) display server system will eventually replace X and mitigates the shared resource security issue that X has. However, the issue is still present if apps make use of the compatibility layer that allows X clients to run in Wayland. Wayland has been around since 2012[^1] and several GUI toolkits are compatible[^2] as of Q3 2018. Of note, Firefox is not yet compatible[^3]. [Project Crostini](https://chromium-review.googlesource.com/c/chromium/src/+/879173) may have solved this problem. The project's goal is to [use LXD to run Linux apps in Chrome OS](https://blog.simos.info/a-closer-look-at-chrome-os-using-lxd-to-run-linux-gui-apps-project-crostini/).
+
 The goal of this project is to isolate the app as much as possible while using little host resources, easy setup, and user friendly. The original use case was Firefox, but efforts were made to keep it generic enough for other apps.
 
 The tools in this project are essentially just wrappers around LXD and xpra.
@@ -25,6 +27,9 @@ At one end of the isolation spectrum, system virtual machines (VM), or hyperviso
   * [gVisor](https://github.com/google/gvisor) ("[not a sandbox](https://github.com/google/gvisor#why-does-gvisor-exist)") - a user-space kernel that provides an isolation boundary between the application and the host kernel. "seccomp on steroids"
   * [Oz](https://github.com/subgraph/oz) (sandbox used by [Subgraph OS](https://subgraph.com/)) - transparently wraps executables by using Linux namespaces, seccomp filters, capabilities, and X11 isolation. The OS uses a hardened Linux kernel (through grsecurity, PaX, and RAP) and a custom sandbox called Oz
   * [Subuser](http://subuser.org/) - isolates apps in Docker containers and uses XPRA to isolate GUI. “Turns Docker container into an app”
+  * [Snap](https://snapcraft.io/) package - sandboxed software package. Written in Go. License is GPL 3.0. Provides packaging tools, auto updates from a remote store, and versioning. Apps are isolated from host and other apps using "confinement". Permissions for access must be declared in package meta file or manually via host commandline tool. Self-contained: all code, read-only data, and non-core libraries are stored in a read-only SquashFS image. Core libraries provided by a core snap. Security enforcement mechanisms: AppArmor, seccomp, cgroups, and namespaces.
+  * [Flatpak](https://www.flatpak.org/) package - sandboxed software package. Written in C. License is LGPL 2.1. Similar to Snap. Security enforcement mechanism uses bubblewrap which uses seccomp, cgroups, namespaces, and bind mounts. Identical files between app versions are deduped to save space.
+  * [AppImage](https://appimage.org/) package - format for distributing apps in a self-contained image. Written in C. License is MIT. Security is not a goal. [Comparison against similar projects](https://github.com/AppImage/AppImageKit/wiki/Similar-projects)
 * rules-based ([Linux Security Modules (LSM)](https://www.kernel.org/doc/htmldocs/lsm/index.html)) - AppArmor, SELinux, seccomp
 
 ## [Types](https://winswitch.org/documentation/protocols/choose.html) of GUI Isolation
@@ -73,7 +78,13 @@ The "attach" tool will:
 2. using SSH as transport, start the xpra server
 3. using Unix socket as transport, attach xpra client
 
-## See also
+# References
+
+[^1]: https://wayland.freedesktop.org/releases.html
+[^2]: https://wayland.freedesktop.org/toolkits.html
+[^3]: https://bugzilla.mozilla.org/show_bug.cgi?id=635134
+
+# See also
 
 * bitsandslices blog – [Run LXD container apps on separate X server](https://bitsandslices.wordpress.com/2016/05/12/run-lxd-container-apps-on-separate-x-server/)
 * Stéphane Graber blog - [LXC 1.0: Unprivileged containers](https://www.stgraber.org/2014/01/17/lxc-1-0-unprivileged-containers/)
@@ -155,8 +166,12 @@ You should only need to create a new cloud-init YAML config file. See the one fo
 
 8. Errors creating the container
 
-  The "suite" in the APT repo line for xpra may be pointing to the wrong Ubuntu distribution. Check what distribution the container is (`lsb_release -c`) and match with the cloud config YAML file.
+   The "suite" in the APT repo line for xpra may be pointing to the wrong Ubuntu distribution. Check what distribution the container is (`lsb_release -c`) and match with the cloud config YAML file.
 
 9. An extra launcher icon is created for the app after attaching
 
-  Add a "StartupWMClass" key to the desktop file and set its value to the value reported by `xprop 8s ' $0\n' WM_CLASS | cut -f2 -d' '`. You can also force a temporary class on the window by running `xprop -f WM_CLASS 8s -set WM_CLASS my-app`. This would have to be set each time the app was run and actually this method doesn't properly set the WM_CLASS value because `xprop` cannot set a tuple value which WM_CLASS is.
+   Add a "StartupWMClass" key to the desktop file and set its value to the value reported by `xprop 8s ' $0\n' WM_CLASS | cut -f2 -d' '`. You can also force a temporary class on the window by running `xprop -f WM_CLASS 8s -set WM_CLASS my-app`. This would have to be set each time the app was run and actually this method doesn't properly set the WM_CLASS value because `xprop` cannot set a tuple value which WM_CLASS is.
+
+10. Sound is not working or delayed by minutes
+
+    [The AppArmor profile on the host might be denying file locking of a Unix socket](https://github.com/lxc/lxc/issues/820). A workaround is to disable 2 properties of the systemd RealtimeKit service: `PrivateTmp=no` and `PrivateNetwork=no`. Run `systemctl edit rtkit-daemon.service` in the container.
