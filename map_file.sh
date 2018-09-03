@@ -5,6 +5,7 @@
 # TODO: newlines in filenames will cause problems
 
 readonly CONTAINER_MOUNTS_DIR=${HOME}/container_mounts
+readonly PROGRAM_NAME='File Mapper'
 readonly WINDOW_TITLE='File Mapper'
 
 function list_containers() {
@@ -13,6 +14,7 @@ function list_containers() {
 
 function select_container() {
     zenity \
+      --name="${PROGRAM_NAME}" \
       --title="${WINDOW_TITLE}" \
       --window-icon=question \
       --list \
@@ -31,6 +33,7 @@ function cleanup() {
 
 function wait() {
     zenity \
+      --name="${PROGRAM_NAME}" \
       --title="${WINDOW_TITLE}" \
       --window-icon=info \
       --list \
@@ -41,6 +44,7 @@ function wait() {
 
 function list_xpra_sessions() {
     zenity \
+      --name="${PROGRAM_NAME}" \
       --title="${WINDOW_TITLE}" \
       --progress \
       --text='Waiting for lxc command to complete...' \
@@ -92,7 +96,7 @@ while read -r file; do
     mapped_files[${file_id}]="${file}"
     mapped_devices[${file_id}]=${dev_name}
     mapped_container_paths[${file_id}]="${container_path}"
-done < <(zenity --title="${WINDOW_TITLE} - Step 2 of 2: Select file(s)" --window-icon=question --file-selection --multiple --separator=$'\n')
+done < <(zenity --name="${PROGRAM_NAME}" --title="${WINDOW_TITLE} - Step 2 of 2: Select file(s)" --window-icon=question --file-selection --multiple --separator=$'\n')
 
 [ ${#mapped_files[@]} -eq 0 ] && exit
 
@@ -106,6 +110,7 @@ while true; do
     fi
     prompt_text+="Unmap ${#mapped_files[@]} file(s) from container \"${container}\"?"
     zenity \
+      --name="${PROGRAM_NAME}" \
       --title="${WINDOW_TITLE}" \
       --question \
       --text="${prompt_text}" \
