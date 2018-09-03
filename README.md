@@ -57,11 +57,13 @@ At one end of the isolation spectrum, system virtual machines (VM), or hyperviso
 * to reduce complexity, some things are hard-coded (e.g., the directory in container and host for bind mounts)
   * bind mount for xpra is hard-coded to */home/ubuntu/.xpra* in container
   * bind mount for file share is hard-coded to */home/ubuntu/share* in container
+  * bind mounts for mapped files are hard-coded to */home/ubuntu/maps/* in container
 * keeping the container software up-to-date is left up to the user. However, it is probably already handled by the container OS
-* using an unprivileged container means more effort is needed for sharing files. This is addressed by using ACLs for the bind mount such that the container user and host user may read and write
+* using an unprivileged container means more effort is needed for sharing files. This is addressed by using ACLs for the bind mount such that the container user and host user may read and write. This container user is the same across all containers.
 * container user id is hard-coded to 1001000
 * container networking uses the default bridge and SSH is hard-coded to use "ubuntu" username and IPv4
 * it is possible that a client may try to connect to an existing display because the display numbers are chosen with a small entropy source; the `$RANDOM` parameter in Bash
+* newline characters in files that are mapped into a container will cause problems
 
 ## How it Works
 
@@ -78,6 +80,19 @@ The "attach" tool will:
 2. using SSH as transport, start the xpra server
 3. using Unix socket as transport, attach xpra client
 
+The "map" tool will:
+
+1. ask the user which file(s) they want to map into the container
+2. change the ACL on the selected file(s)
+3. map them in
+4. keep a prompt open and wait for the user to confirm moving to the unmapping stage
+5. unmap them
+6. restore ACLs
+
+![select container](docs/select_container.png)
+
+![file map list](docs/file_map_list.png)
+
 # See also
 
 * bitsandslices blog – [Run LXD container apps on separate X server](https://bitsandslices.wordpress.com/2016/05/12/run-lxd-container-apps-on-separate-x-server/)
@@ -90,7 +105,7 @@ The "attach" tool will:
 
 # Installation
 
-This project has been tested on a host with Ubuntu Bionic 18.04 and container with Ubuntu Xenial 16.04.
+This project has been tested on a host with Ubuntu Bionic 18.04 and containers with Ubuntu Xenial 16.04 and Ubuntu Bionic 18.04.
 
 * [xpra](https://www.xpra.org/) (version in Ubuntu repo is probably old so follow installation instructions on project website)
 * zfsutils-linux (optional, but helps with disk space usage of lxd containers)
