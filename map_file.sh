@@ -73,7 +73,7 @@ trap cleanup EXIT
 
 while read -r file; do
     # file ID is SHA-256 digest as hex string
-    file_id=$(sha256sum ${file} | cut -f1 -d" ")
+    file_id=$(sha256sum "${file}" | cut -f1 -d" ")
 
     # device name as seen by lxc
     dev_name=mapped-${file_id}
