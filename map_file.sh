@@ -96,24 +96,34 @@ while read -r file; do
     mapped_files[${file_id}]="${file}"
     mapped_devices[${file_id}]=${dev_name}
     mapped_container_paths[${file_id}]="${container_path}"
-done < <(zenity --name="${PROGRAM_NAME}" --title="${WINDOW_TITLE} - Step 2 of 2: Select file(s)" --window-icon=question --file-selection --multiple --separator=$'\n')
+done < <(zenity --name="${PROGRAM_NAME}" --title="${WINDOW_TITLE} - Step 2 of 2: Select file(s)" --file-selection --multiple --separator=$'\n')
 
 [ ${#mapped_files[@]} -eq 0 ] && exit
 
 # Show mapped files list until user allows them to be unmapped #
 
+readonly default_prompt_text="Unmap ${#mapped_files[@]} file(s) from container \"${container}\"?"
 while true; do
     wait
     prompt_text=''
     if [ -n "$(list_xpra_sessions)" ]; then
-        prompt_text='Detected a GUI session. Possible data loss. '
-    fi
-    prompt_text+="Unmap ${#mapped_files[@]} file(s) from container \"${container}\"?"
-    zenity \
+      zenity \
       --name="${PROGRAM_NAME}" \
       --title="${WINDOW_TITLE}" \
+      --window-icon=warning \
       --question \
-      --text="${prompt_text}" \
-      --no-wrap \
+      --text="Detected a GUI session. Possible data loss.\n\n${default_prompt_text}" \
+      --icon-name=dialog-warning \
+      --ellipsize \
+      --default-cancel \
       && break
+    else
+      zenity \
+        --name="${PROGRAM_NAME}" \
+        --title="${WINDOW_TITLE}" \
+        --question \
+        --text="${default_prompt_text}" \
+        --ellipsize \
+        && break
+    fi
 done
