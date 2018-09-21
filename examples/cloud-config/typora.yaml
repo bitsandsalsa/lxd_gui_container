@@ -4,7 +4,7 @@
 apt:
   sources:
     winswitch:
-      source: "deb http://winswitch.org/ xenial main"
+      source: "deb http://winswitch.org/ bionic main"
       keyid: "C11C 0A4D F702 EDF6 C04F 458C 18AD B31C F18A D6BB"
     typora:
       source: "deb https://typora.io/linux ./"
@@ -12,8 +12,6 @@ apt:
 packages:
   - xpra
   - typora
-  - libxss1
-  - libnss3
 runcmd:
   - [ systemctl, disable, --now, xpra, snapd, snapd.socket ]
 timezone: US/Pacific
