@@ -28,7 +28,7 @@ At one end of the isolation spectrum, system virtual machines (VM), or hyperviso
   * [Oz](https://github.com/subgraph/oz) (sandbox used by [Subgraph OS](https://subgraph.com/)) - transparently wraps executables by using Linux namespaces, seccomp filters, capabilities, and X11 isolation. The OS uses a hardened Linux kernel (through grsecurity, PaX, and RAP) and a custom sandbox called Oz
   * [Subuser](http://subuser.org/) - isolates apps in Docker containers and uses XPRA to isolate GUI. “Turns Docker container into an app”
   * [Snap](https://snapcraft.io/) package - sandboxed software package. Written in Go. License is GPL 3.0. Provides packaging tools, auto updates from a remote store, and versioning. Apps are isolated from host and other apps using "confinement". Permissions for access must be declared in package meta file or manually via host commandline tool. Self-contained: all code, read-only data, and non-core libraries are stored in a read-only SquashFS image. Core libraries provided by a core snap. Security enforcement mechanisms: AppArmor, seccomp, cgroups, and namespaces.
-  * [Flatpak](https://www.flatpak.org/) package - sandboxed software package. Written in C. License is LGPL 2.1. Similar to Snap. Security enforcement mechanism uses bubblewrap which uses seccomp, cgroups, namespaces, and bind mounts. Identical files between app versions are deduped to save space.
+  * [Flatpak](https://www.flatpak.org/) package - sandboxed software package. Written in C. License is LGPL 2.1. Similar to Snap. Formerly "xdg-app". Security enforcement mechanism uses bubblewrap which uses seccomp, cgroups, namespaces, and bind mounts. Identical files between app versions are deduped to save space.
   * [AppImage](https://appimage.org/) package - format for distributing apps in a self-contained image. Written in C. License is MIT. Security is not a goal. [Comparison against similar projects](https://github.com/AppImage/AppImageKit/wiki/Similar-projects)
 * rules-based ([Linux Security Modules (LSM)](https://www.kernel.org/doc/htmldocs/lsm/index.html)) - AppArmor, SELinux, seccomp
 
@@ -64,6 +64,7 @@ At one end of the isolation spectrum, system virtual machines (VM), or hyperviso
 * container networking uses the default bridge and SSH is hard-coded to use "ubuntu" username and IPv4
 * it is possible that a client may try to connect to an existing display because the display numbers are chosen with a small entropy source; the `$RANDOM` parameter in Bash
 * newline characters in files that are mapped into a container will cause problems
+* the permissions on mapped files may not be returned to their original permissions if they were modified by the host or container user after mapping
 
 ## How it Works
 
