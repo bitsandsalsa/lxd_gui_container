@@ -24,6 +24,7 @@ function print_err() {
 }
 
 function cleanup() {
+  xpra stop ssh://ubuntu@"${container_ip}"/${display_num}
   lxc exec "${CONTAINER_NAME}" -- sudo -u ubuntu -i xauth remove ":${display_num}"
 }
 
@@ -67,6 +68,7 @@ declare -ri display_num=${RANDOM}
 # note that we add group permissions so that ACL mask is set
 xpra start ssh://ubuntu@"${container_ip}"/${display_num} \
   --socket-permissions=660 \
+  --socket-dir=~/.xpra \
   --start-child="${APP_CMDLINE}" \
   --exit-with-children \
   --start-via-proxy=no \
