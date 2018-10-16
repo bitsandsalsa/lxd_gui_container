@@ -1,5 +1,13 @@
 #cloud-config
 apt:
+  conf: |
+    Unattended-Upgrade {
+      Allowed-Origins {
+        "${distro_id}:${distro_codename}-updates";
+        "${distro_id}:${distro_codename}-backports";
+        "winswitch.org:bionic";
+      };
+    };
   sources:
     winswitch:
       source: "deb http://winswitch.org/ bionic main"

@@ -2,6 +2,15 @@
 #
 # https://typora.io/#linux
 apt:
+  conf: |
+    Unattended-Upgrade {
+      Allowed-Origins {
+        "${distro_id}:${distro_codename}-updates";
+        "${distro_id}:${distro_codename}-backports";
+        "winswitch.org:bionic";
+        "typora.io:";
+      };
+    };
   sources:
     winswitch:
       source: "deb http://winswitch.org/ bionic main"
@@ -12,6 +21,8 @@ apt:
 packages:
   - xpra
   - typora
+  - libgtk-3-0
+  - libxss1
 runcmd:
   - [ systemctl, disable, --now, xpra, snapd, snapd.socket ]
 timezone: US/Pacific
