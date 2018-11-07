@@ -8,6 +8,11 @@ apt:
         "winswitch.org:bionic";
       };
     };
+    APT {
+      Periodic {
+        Download-Upgradeable-Packages "1";
+      };
+    };
   sources:
     winswitch:
       source: "deb http://winswitch.org/ bionic main"
