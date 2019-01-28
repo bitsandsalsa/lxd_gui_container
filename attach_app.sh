@@ -96,4 +96,4 @@ if [[ ${try_count} -ge ${NUM_ATTEMPTS} ]]; then
     exit 1
 fi
 
-xpra attach socket:"${XPRA_SOCK}" "$@" || exit 1
+exec xpra attach socket:"${XPRA_SOCK}" "$@" || exit 1
