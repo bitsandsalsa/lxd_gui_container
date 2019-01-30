@@ -185,3 +185,7 @@ You should only need to create a new cloud-init YAML config file. See the one fo
 10. Sound is not working or delayed by minutes
 
     [The AppArmor profile on the host might be denying file locking of a Unix socket](https://github.com/lxc/lxc/issues/820). A workaround is to disable 2 properties of the systemd RealtimeKit service: `PrivateTmp=no` and `PrivateNetwork=no`. Run `systemctl edit rtkit-daemon.service` in the container.
+
+11. Output for commandline programs
+
+    See [issue #1](https://github.com/bitsandsalsa/lxd_gui_container/issues/1).
