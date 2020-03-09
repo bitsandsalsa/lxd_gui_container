@@ -16,7 +16,7 @@ At one end of the isolation spectrum, system virtual machines (VM), or hyperviso
 
 ## Types of Isolation
 
-* system virtualization (i.e., VM, hypervisor) - [VMware](https://www.vmware.com/), [VirtualBox](https://www.virtualbox.org/), [QEMU-KVM](https://www.linux-kvm.org/page/Main_Page), [Xen](https://xenproject.org/), [Qubes OS](https://www.qubes-os.org/)
+* system virtualization (i.e., VM, hypervisor) - [VMware](https://www.vmware.com/), [VirtualBox](https://www.virtualbox.org/), [QEMU-KVM](https://www.linux-kvm.org/page/Main_Page), [Xen](https://xenproject.org/), [Qubes OS](https://www.qubes-os.org/), [Multipass](https://multipass.run/)
   * Qubes OS - compartmentalizes activities into domains (AppVMs [Xen virtual machines])
 * OS virtualization (i.e., container) - [Docker](https://www.docker.com/), [LXD](https://linuxcontainers.org/), [Rocket](https://coreos.com/rkt/), [User-mode Linux](http://user-mode-linux.sourceforge.net/)
 * app virtualization (i.e., sandbox)
